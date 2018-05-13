@@ -1,9 +1,8 @@
 <?php
 namespace Siqwell\Payment\Drivers;
 
-use App\Services\Payment\Traits\ExitTrait;
+use Siqwell\Payment\Traits\ExitTrait;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\App;
 use Omnipay\WebMoney\Message\CompletePurchaseResponse;
 use Siqwell\Payment\AbstractDriver;
 use Siqwell\Payment\Contracts\DriverContract;
@@ -69,7 +68,7 @@ class WebMoney extends AbstractDriver implements DriverContract
             $this->exit('YES');
         }
 
-        if (App::environment('local')) {
+        if (app()->isLocal()) {
             $payment_id = $request->input('LMI_PAYMENT_NO');
             $reference  = str_random();
         } else {

@@ -1,9 +1,6 @@
 <?php
 namespace Siqwell\Payment;
 
-use App\Services\Payment\Events\PurchaseComplete;
-use App\Services\Payment\Events\PurchaseFailed;
-use App\Services\Payment\Events\PurchaseStart;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
 use Omnipay\Common\Exception\InvalidResponseException;
@@ -11,6 +8,9 @@ use Omnipay\Common\Exception\OmnipayException;
 use Siqwell\Payment\Contracts\DriverContract;
 use Siqwell\Payment\Contracts\PaymentContract;
 use Siqwell\Payment\Entities\Gateway;
+use Siqwell\Payment\Events\PurchaseComplete;
+use Siqwell\Payment\Events\PurchaseFailed;
+use Siqwell\Payment\Events\PurchaseStart;
 use Siqwell\Payment\Exceptions\PurchaseException;
 use Siqwell\Payment\Requests\CompleteRequest;
 use Siqwell\Payment\Requests\PurchaseRequest;

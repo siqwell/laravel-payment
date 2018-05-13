@@ -1,5 +1,5 @@
 <?php
-namespace App\Services\Payment\Traits;
+namespace Siqwell\Payment\Traits;
 
 /**
  * Trait ExitTrait

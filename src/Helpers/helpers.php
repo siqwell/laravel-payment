@@ -1,7 +1,7 @@
 <?php
 
-use App\Services\Payment\Contracts\CurrencyContract;
 use Illuminate\Support\Carbon;
+use Siqwell\Payment\Contracts\CurrencyContract;
 use Siqwell\Payment\Helpers\Currency;
 
 if (!function_exists('currency')) {

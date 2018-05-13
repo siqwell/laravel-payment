@@ -1,5 +1,5 @@
 <?php
-namespace App\Services\Payment\Events;
+namespace Siqwell\Payment\Events;
 
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Foundation\Events\Dispatchable;

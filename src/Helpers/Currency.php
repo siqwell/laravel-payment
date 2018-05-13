@@ -1,8 +1,8 @@
 <?php
 namespace Siqwell\Payment\Helpers;
 
-use App\Services\Payment\Contracts\CurrencyContract;
 use Illuminate\Support\Carbon;
+use Siqwell\Payment\Contracts\CurrencyContract;
 use Siqwell\Payment\Entities\Course;
 use Siqwell\Payment\Exceptions\ExchangeException;
 

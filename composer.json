@@ -27,15 +27,5 @@
         "files": [
             "src/Helpers/helpers.php"
         ]
-    },
-    "extra": {
-        "laravel": {
-            "providers": [
-                "Siqwell\\Payment\\Providers\\PaymentServiceProvider"
-            ],
-            "aliases": {
-                "Payment": "Siqwell\\Payment\\Facades\\Payment"
-            }
-        }
     }
 }
