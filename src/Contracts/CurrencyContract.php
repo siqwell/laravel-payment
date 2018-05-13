@@ -1,5 +1,5 @@
 <?php
-namespace App\Services\Payment\Contracts;
+namespace Siqwell\Payment\Contracts;
 
 /**
  * Interface CurrencyContract

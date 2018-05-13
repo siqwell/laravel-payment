@@ -2,11 +2,11 @@
 
 namespace Siqwell\Payment\Entities;
 
-use App\Services\Payment\Contracts\CurrencyContract;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
+use Siqwell\Payment\Contracts\CurrencyContract;
 use Watson\Rememberable\Rememberable;
 
 /**
