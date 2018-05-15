@@ -16,14 +16,14 @@ class GatewaysSeeder extends Seeder
             'key'         => 'wmz',
             'name'        => 'WebMoney USD',
             'driver'      => 'WebMoney',
-            'currency_id' => 1,
+            'currency_id' => 840,
             'is_active'   => true,
         ],
         [
             'key'         => 'wme',
             'name'        => 'WebMoney EUR',
             'driver'      => 'WebMoney',
-            'currency_id' => 2,
+            'currency_id' => 978,
             'is_active'   => true,
         ],
     ];

@@ -13,7 +13,7 @@ class CurrencySeeder extends Seeder
      */
     private $currencies = [
         [
-            'id'             => 1,
+            'id'             => 840,
             'title'          => 'U.S. Dollar',
             'symbol_left'    => '$ ',
             'symbol_right'   => '',
@@ -24,7 +24,7 @@ class CurrencySeeder extends Seeder
             'is_active'      => 1,
         ],
         [
-            'id'             => 2,
+            'id'             => 978,
             'title'          => 'Euro',
             'symbol_left'    => '€ ',
             'symbol_right'   => '',
@@ -35,7 +35,7 @@ class CurrencySeeder extends Seeder
             'is_active'      => 1,
         ],
         [
-            'id'             => 7,
+            'id'             => 643,
             'title'          => 'Russian ruble',
             'symbol_left'    => '',
             'symbol_right'   => ' ₽',

@@ -18,7 +18,7 @@ class CreateGatewaysTable extends Migration
     {
         /** @var \Siqwell\Payment\Entities\Gateway */
         Schema::create('gateways', function (Blueprint $table) {
-            $table->increments('id');
+            $table->increments('id')->unsigned();
 
             $table->string('key');
             $table->string('name');
