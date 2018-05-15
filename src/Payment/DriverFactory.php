@@ -10,21 +10,7 @@ use Siqwell\Payment\Exceptions\RuntimeException;
  */
 class DriverFactory
 {
-    /**
-     * Internal storage for all available gateways
-     *
-     * @var array
-     */
-    private $gateways = [];
-
-    /**
-     * @return array
-     */
-    public function all(): array
-    {
-        return $this->gateways;
-    }
-
+    const GATEWAY = 'Gateway.php';
     /**
      * @param string $gateway
      * @param string $driver
@@ -33,16 +19,10 @@ class DriverFactory
      */
     public function create(string $gateway, string $driver): DriverContract
     {
-        if (isset($this->gateways[$gateway])) {
-            $class = $this->gateways[$gateway];
-        } else {
-            $class = $this->namespace($driver);
+        $class = $this->namespace($driver);
 
-            if (!class_exists($class)) {
-                throw new RuntimeException("Class '$class' not found");
-            }
-
-            $this->gateways[$gateway] = $class;
+        if (!class_exists($class)) {
+            throw new RuntimeException(sprintf('Class %s not found', $class));
         }
 
         return new $class($driver, $gateway);
@@ -60,19 +40,19 @@ class DriverFactory
      * PayPal\Express      => \Siqwell\Payment\Drivers\PayPal\Express
      * PayPal_Express      => \Siqwell\Payment\Drivers\Express
      *
-     * @param  string $short_name The short gateway name
+     * @param  string $shortName The short gateway name
      *
      * @return string The fully namespaced gateway class name
      */
-    protected function namespace($short_name)
+    protected function namespace($shortName)
     {
-        if (0 === strpos($short_name, '\\')) {
-            return $short_name;
+        if (0 === strpos($shortName, '\\')) {
+            return $shortName;
         }
 
         // replace underscores with namespace marker, PSR-0 style
-        $short_name = str_replace('_', '\\', $short_name);
+        $shortName = str_replace('_', '\\', $shortName);
 
-        return __NAMESPACE__ . '\\Drivers\\' . $short_name;
+        return __NAMESPACE__ . sprintf('\\%s\\', $shortName) . self::GATEWAY;
     }
 }

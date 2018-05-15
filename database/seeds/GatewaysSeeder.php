@@ -18,6 +18,7 @@ class GatewaysSeeder extends Seeder
             'driver'      => 'WebMoney',
             'currency_id' => 840,
             'is_active'   => true,
+            'params'      => '{}',
         ],
         [
             'key'         => 'wme',
@@ -25,6 +26,31 @@ class GatewaysSeeder extends Seeder
             'driver'      => 'WebMoney',
             'currency_id' => 978,
             'is_active'   => true,
+            'params'      => '{}',
+        ],
+        [
+            'key'         => 'coin',
+            'name'        => 'CoinPayment',
+            'driver'      => 'Coin',
+            'currency_id' => 840,
+            'is_active'   => true,
+            'params'      => '{"currency2":643}',
+        ],
+        [
+            'key'         => 'pb',
+            'name'        => 'PayBoutique',
+            'driver'      => 'PayBoutique',
+            'currency_id' => 840,
+            'is_active'   => true,
+            'params'      => '{}',
+        ],
+        [
+            'key'         => 'tp',
+            'name'        => 'TransactPro',
+            'driver'      => 'TransactPro',
+            'currency_id' => 840,
+            'is_active'   => true,
+            'params'      => '{}',
         ],
     ];
 

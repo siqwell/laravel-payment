@@ -37,7 +37,7 @@ class PurchaseRequest
     /**
      * @return bool
      */
-    public function isSuccesfull(): bool
+    public function isSuccessful(): bool
     {
         return false;
     }

@@ -130,4 +130,14 @@ class Payment implements PaymentContract
     {
         return $this->attributes['description'];
     }
+
+    /**
+     * @param string $key
+     *
+     * @return mixed|null
+     */
+    public function getAttributeByKey(string $key)
+    {
+        return isset($this->attributes[$key]) ? $this->attributes[$key] : null;
+    }
 }

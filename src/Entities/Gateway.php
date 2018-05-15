@@ -32,7 +32,8 @@ class Gateway extends Model implements GatewayContract
     protected $fillable = [
         'key',
         'name',
-        'driver'
+        'driver',
+        'params'
     ];
 
     /**
@@ -74,5 +75,27 @@ class Gateway extends Model implements GatewayContract
     public function getName(): string
     {
         return $this->getAttribute('key');
+    }
+
+    /**
+     * @return array
+     */
+    public function getParams(): array
+    {
+        return json_decode($this->getAttribute('params'), true);
+    }
+
+    /**
+     * @param string $key
+     *
+     * @return null|string
+     */
+    public function getParameterByKey(string $key): ?string
+    {
+        if (isset($this->getParams()[$key])) {
+            return $this->getParams()[$key];
+        }
+
+        return null;
     }
 }

@@ -1,11 +1,9 @@
 <?php
-namespace Siqwell\Payment\Drivers;
+namespace Siqwell\Payment\WebMoney;
 
-use Siqwell\Payment\Traits\ExitTrait;
 use Illuminate\Http\Request;
 use Omnipay\WebMoney\Message\CompletePurchaseResponse;
-use Siqwell\Payment\AbstractDriver;
-use Siqwell\Payment\Contracts\DriverContract;
+use Siqwell\Payment\BaseDriver;
 use Siqwell\Payment\Contracts\PaymentContract;
 use Siqwell\Payment\Requests\CompleteRequest;
 use Siqwell\Payment\Requests\PurchaseRequest;
@@ -15,10 +13,8 @@ use Siqwell\Payment\Support\Form;
  * Class WebMoney
  * @package Siqwell\Payment\Drivers
  */
-class WebMoney extends AbstractDriver implements DriverContract
+class Gateway extends BaseDriver
 {
-    use ExitTrait;
-
     /**
      * @param PaymentContract $contract
      *
@@ -34,23 +30,6 @@ class WebMoney extends AbstractDriver implements DriverContract
         return new PurchaseRequest(
             new Form($result->getRedirectUrl(), $result->getRedirectData(), $result->getRedirectMethod())
         );
-    }
-
-    /**
-     * @param PaymentContract $contract
-     *
-     * @return array
-     */
-    public function getPurchaseAttributes(PaymentContract $contract): array
-    {
-        return [
-            'transactionId' => $contract->getId(),
-            'amount'        => $contract->getAmount(),
-            'description'   => $contract->getDescription(),
-            'notifyUrl'     => $contract->getResultUrl(),
-            'returnUrl'     => $contract->getSuccessUrl(),
-            'cancelUrl'     => $contract->getFailedUrl(),
-        ];
     }
 
     /**
@@ -82,23 +61,19 @@ class WebMoney extends AbstractDriver implements DriverContract
     }
 
     /**
-     * @param Request $request
+     * @param PaymentContract $contract
      *
-     * @return mixed
+     * @return array
      */
-    public function success(Request $request)
+    private function getPurchaseAttributes(PaymentContract $contract): array
     {
-        $this->exit('YES');
-    }
-
-    /**
-     * @param Request     $request
-     * @param string|null $message
-     *
-     * @return mixed|void
-     */
-    public function failed(Request $request, string $message = null)
-    {
-        $this->exit($message ? "ERR: {$message}" : 'ERR');
+        return [
+            'transactionId' => $contract->getId(),
+            'amount'        => $contract->getAmount(),
+            'description'   => $contract->getDescription(),
+            'notifyUrl'     => $contract->getResultUrl(),
+            'returnUrl'     => $contract->getSuccessUrl(),
+            'cancelUrl'     => $contract->getFailedUrl(),
+        ];
     }
 }

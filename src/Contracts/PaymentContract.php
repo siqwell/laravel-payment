@@ -61,4 +61,11 @@ interface PaymentContract
      * @return string
      */
     public function getFailedUrl(): string;
+
+    /**
+     * @param string $key
+     *
+     * @return mixed
+     */
+    public function getAttributeByKey(string $key);
 }

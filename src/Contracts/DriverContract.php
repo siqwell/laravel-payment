@@ -3,6 +3,7 @@ namespace Siqwell\Payment\Contracts;
 
 use Illuminate\Http\Request;
 use Omnipay\Common\Exception\InvalidResponseException;
+use Siqwell\Payment\Exceptions\OperationException;
 use Siqwell\Payment\Requests\CompleteRequest;
 use Siqwell\Payment\Requests\PurchaseRequest;
 
@@ -15,24 +16,25 @@ interface DriverContract
     /**
      * @param PaymentContract $contract
      *
-     * @return PurchaseRequest
+     * @return PurchaseRequest|array
      */
-    public function purchase(PaymentContract $contract): PurchaseRequest;
+    public function purchase(PaymentContract $contract);
+
+    /**
+     * @param Request $request
+     *
+     * @return CompleteRequest|array
+     * @throws InvalidResponseException
+     */
+    public function complete(Request $request);
 
     /**
      * @param PaymentContract $contract
      *
      * @return array
+     * @throws OperationException
      */
-    public function getPurchaseAttributes(PaymentContract $contract): array;
-
-    /**
-     * @param Request $request
-     *
-     * @return CompleteRequest
-     * @throws InvalidResponseException
-     */
-    public function complete(Request $request): CompleteRequest;
+    public function check(PaymentContract $contract): array;
 
     /**
      * @param Request $request

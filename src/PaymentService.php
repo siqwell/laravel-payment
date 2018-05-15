@@ -4,7 +4,6 @@ namespace Siqwell\Payment;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
 use Omnipay\Common\Exception\InvalidResponseException;
-use Omnipay\Common\Exception\OmnipayException;
 use Siqwell\Payment\Contracts\DriverContract;
 use Siqwell\Payment\Contracts\PaymentContract;
 use Siqwell\Payment\Entities\Gateway;
@@ -68,8 +67,7 @@ class PaymentService
      * @param Gateway $gateway
      * @param Request $request
      *
-     * @return CompleteRequest
-     * @throws OmnipayException
+     * @return CompleteRequest|void
      * @throws PurchaseException
      */
     public function complete(Gateway $gateway, Request $request): CompleteRequest
