@@ -8,6 +8,7 @@ use Omnipay\Common\Exception\RuntimeException;
 use Siqwell\Omnipay\Omnipay;
 use Siqwell\Payment\Contracts\DriverContract;
 use Siqwell\Payment\Contracts\PaymentContract;
+use Siqwell\Payment\Entities\Gateway;
 use Siqwell\Payment\Exceptions\DriverException;
 use Siqwell\Payment\Exceptions\OperationException;
 use Siqwell\Payment\Requests\CheckRequest;
@@ -29,7 +30,7 @@ class BaseDriver implements DriverContract
     protected $driver;
 
     /**
-     * @var string
+     * @var Gateway
      */
     protected $gateway;
 
@@ -49,12 +50,12 @@ class BaseDriver implements DriverContract
     public function __construct(string $driver, string $gateway)
     {
         $this->driver  = $driver;
-        $this->gateway = $gateway;
+        $this->gateway = Gateway::where('key', $gateway)->firstOrFail();
 
         try {
-            $this->omnipay = Omnipay::gateway($this->gateway);
+            $this->omnipay = Omnipay::gateway($gateway);
         } catch (RuntimeException $e) {
-            throw new DriverException("Gateway '{$this->gateway}' for '{$driver}' driver not configured in omnipay config file");
+            throw new DriverException("Gateway '{$gateway}' for '{$driver}' driver not configured in omnipay config file");
         }
     }
 
@@ -69,10 +70,10 @@ class BaseDriver implements DriverContract
     /**
      * @param PaymentContract $contract
      *
-     * @return PurchaseRequest|array
+     * @return PurchaseRequest
      * @throws OperationException
      */
-    public function purchase(PaymentContract $contract)
+    public function purchase(PaymentContract $contract): PurchaseRequest
     {
         throw new OperationException(sprintf('Method %s is not implemented', __FUNCTION__));
     }
@@ -80,7 +81,7 @@ class BaseDriver implements DriverContract
     /**
      * @param Request $request
      *
-     * @return CompleteRequest|array
+     * @return CompleteRequest
      * @throws OperationException
      */
     public function complete(Request $request)

@@ -8,11 +8,14 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\UrlGenerator;
 use Omnipay\Common\Message\ResponseInterface;
 use Omnipay\WebMoney\Message\CompletePurchaseResponse;
+use Omnipay\WebMoney\Message\PurchaseResponse;
 use Siqwell\Payment\BaseDriver;
 use Siqwell\Payment\Contracts\PaymentContract;
 use Siqwell\Payment\Exceptions\DriverException;
 use Siqwell\Payment\Requests\CheckRequest;
 use Siqwell\Payment\Requests\CompleteRequest;
+use Siqwell\Payment\Requests\PurchaseRequest;
+use Siqwell\Payment\Support\Location;
 
 /**
  * Class Gateway
@@ -23,28 +26,22 @@ class Gateway extends BaseDriver
     /**
      * @param PaymentContract $contract
      *
-     * @return array
+     * @return PurchaseRequest
      */
-    public function purchase(PaymentContract $contract): array
+    public function purchase(PaymentContract $contract): PurchaseRequest
     {
-        $client = [];
+        /** @var PurchaseResponse $result */
+        $result = $this->omnipay->purchase([
+            'transactionId' => md5($contract->getId() . time()),
+            'amount'        => $contract->getAmount(),
+            'description'   => $contract->getDescription(),
+            'notifyUrl'     => $this->getNotifyUrl($contract),
+            'returnUrl'     => $contract->getReturnUrl(),
+            'cancelUrl'     => $contract->getFailedUrl(),
+            'client'        => $contract->getClient()
+        ])->send();
 
-        if ($data = $gateway->getData()) {
-            $client = $data;
-        }
-
-        $user = $gateway->getInvoice()->user()->first();
-        $client['email'] = $user->getAttribute('email');
-
-        return [
-            'orderId'     => md5($contract->getId() . time()),
-            'description' => $contract->getDescription(),
-            'amount'      => $contract->getAmount(),
-            'returnUrl'   => $contract->getSuccessUrl(),
-            'cancelUrl'   => $contract->getFailedUrl(),
-            'notifyUrl'   => $this->getNotifyUrl($contract),
-            'client'      => $client
-        ];
+        return new PurchaseRequest(new Location($result->getRedirectUrl()));
     }
 
     /**

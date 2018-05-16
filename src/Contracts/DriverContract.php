@@ -18,17 +18,17 @@ interface DriverContract
     /**
      * @param PaymentContract $contract
      *
-     * @return PurchaseRequest|array
+     * @return PurchaseRequest
      */
-    public function purchase(PaymentContract $contract);
+    public function purchase(PaymentContract $contract): PurchaseRequest;
 
     /**
      * @param Request $request
      *
-     * @return CompleteRequest|array
+     * @return CompleteRequest
      * @throws InvalidResponseException
      */
-    public function complete(Request $request);
+    public function complete(Request $request): CompleteRequest;
 
     /**
      * @param PaymentContract $contract

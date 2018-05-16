@@ -13,7 +13,7 @@ use Siqwell\Payment\Traits\ExitTrait;
  * Class Dummy
  * @package Siqwell\Payment\Drivers
  */
-class Dummy extends BaseDriver
+class Gateway extends BaseDriver
 {
     use ExitTrait;
     /**
