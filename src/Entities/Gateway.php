@@ -38,6 +38,13 @@ class Gateway extends Model implements GatewayContract
     ];
 
     /**
+     * @var array
+     */
+    protected $casts = [
+        'params' => 'array'
+    ];
+
+    /**
      * @param Builder $query
      */
     public function scopeActive(Builder $query)
