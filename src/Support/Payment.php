@@ -101,6 +101,14 @@ class Payment implements PaymentContract
     }
 
     /**
+     * @return array
+     */
+    public function getCustomer(): array
+    {
+        return $this->attributes['customer'];
+    }
+
+    /**
      * @param array $params
      *
      * @return string
@@ -156,13 +164,5 @@ class Payment implements PaymentContract
     public function getAttributeByKey(string $key)
     {
         return isset($this->attributes[$key]) ? $this->attributes[$key] : null;
-    }
-
-    /**
-     * @return array
-     */
-    public function getClient(): array
-    {
-        return $this->attributes['client'];
     }
 }

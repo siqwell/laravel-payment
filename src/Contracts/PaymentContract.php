@@ -49,7 +49,7 @@ interface PaymentContract
     /**
      * @return array
      */
-    public function getClient(): array;
+    public function getCustomer(): array;
 
     /**
      * @param array $params
