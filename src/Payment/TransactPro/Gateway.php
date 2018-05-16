@@ -3,8 +3,8 @@
 namespace Siqwell\Payment\TransactPro;
 
 use Illuminate\Http\Request;
-use Omnipay\WebMoney\Message\CompletePurchaseResponse;
-use Omnipay\WebMoney\Message\PurchaseResponse;
+use Omnipay\TransactPro\Message\CompletePurchaseResponse;
+use Omnipay\TransactPro\Message\PurchaseResponse;
 use Siqwell\Payment\BaseDriver;
 use Siqwell\Payment\Contracts\PaymentContract;
 use Siqwell\Payment\Contracts\PaymentInterface;
