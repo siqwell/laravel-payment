@@ -1,6 +1,5 @@
 <?php
 namespace Siqwell\Payment\Contracts;
-
 /**
  * Interface PaymentContract
  * @package Siqwell\Payment\Contracts
@@ -48,6 +47,11 @@ interface PaymentContract
     public function getAmount(): float;
 
     /**
+     * @return array
+     */
+    public function getClient(): array;
+
+    /**
      * @return string
      */
     public function getResultUrl(): string;
@@ -56,6 +60,11 @@ interface PaymentContract
      * @return string
      */
     public function getSuccessUrl(): string;
+
+    /**
+     * @return string
+     */
+    public function getReturnUrl(): string;
 
     /**
      * @return string

@@ -140,4 +140,20 @@ class Payment implements PaymentContract
     {
         return isset($this->attributes[$key]) ? $this->attributes[$key] : null;
     }
+
+    /**
+     * @return string
+     */
+    public function getReturnUrl(): string
+    {
+        return $this->attributes['return_url'];
+    }
+
+    /**
+     * @return array
+     */
+    public function getClient(): array
+    {
+        return $this->attributes['client'];
+    }
 }
