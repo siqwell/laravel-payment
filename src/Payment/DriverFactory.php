@@ -34,17 +34,16 @@ class DriverFactory
      * Class names beginning with a namespace marker (\) are left intact.
      * Non-namespaced classes are expected to be in the \Omnipay namespace, e.g.:
      *
-     * \Custom\Gateway     => \Custom\Gateway
-     * \Custom_Gateway     => \Custom_Gateway
-     * Stripe              => \Siqwell\Payment\Drivers\Stripe
-     * PayPal\Express      => \Siqwell\Payment\Drivers\PayPal\Express
-     * PayPal_Express      => \Siqwell\Payment\Drivers\Express
+     *      \Custom\Gateway     => \Custom\Gateway
+     *      \Custom_Gateway     => \Custom_Gateway
+     *      Stripe              => \Omnipay\Stripe\Gateway
+     *      PayPal\Express      => \Omnipay\PayPal\ExpressGateway
+     *      PayPal_Express      => \Omnipay\PayPal\ExpressGateway
      *
-     * @param  string $shortName The short gateway name
-     *
-     * @return string The fully namespaced gateway class name
+     * @param  string  $shortName The short gateway name
+     * @return string  The fully namespaced gateway class name
      */
-    protected function namespace($shortName)
+    public function namespace($shortName)
     {
         if (0 === strpos($shortName, '\\')) {
             return $shortName;
@@ -52,7 +51,10 @@ class DriverFactory
 
         // replace underscores with namespace marker, PSR-0 style
         $shortName = str_replace('_', '\\', $shortName);
+        if (false === strpos($shortName, '\\')) {
+            $shortName .= '\\';
+        }
 
-        return __NAMESPACE__ . sprintf('\\%s\\', $shortName) . self::GATEWAY;
+        return '\\Siqwell\\Payment\\'.$shortName.'Gateway';
     }
 }
