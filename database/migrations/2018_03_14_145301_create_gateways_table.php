@@ -27,7 +27,7 @@ class CreateGatewaysTable extends Migration
             $table->unsignedInteger('currency_id');
             $table->boolean('is_active')->default(false);
 
-            $table->string('params', 1024);
+            $table->json('params')->nullable();
 
             $table->foreign('currency_id')->references('id')->on('currencies')->onDelete('cascade');
         });
