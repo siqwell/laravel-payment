@@ -3,6 +3,7 @@ namespace Siqwell\Payment\WebMoney;
 
 use Illuminate\Http\Request;
 use Omnipay\WebMoney\Message\CompletePurchaseResponse;
+use Omnipay\WebMoney\Message\PurchaseResponse;
 use Siqwell\Payment\BaseDriver;
 use Siqwell\Payment\Contracts\PaymentContract;
 use Siqwell\Payment\Requests\CompleteRequest;
@@ -22,7 +23,7 @@ class Gateway extends BaseDriver
      */
     public function purchase(PaymentContract $contract): PurchaseRequest
     {
-        /** @var \Omnipay\WebMoney\Message\PurchaseResponse $result */
+        /** @var PurchaseResponse $result */
         $result = $this->omnipay->purchase(
             $this->getPurchaseAttributes($contract)
         )->send();
@@ -58,6 +59,27 @@ class Gateway extends BaseDriver
         }
 
         return new CompleteRequest($payment_id, $reference);
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return mixed|void
+     */
+    public function success(Request $request)
+    {
+        $this->exit('YES');
+    }
+
+    /**
+     * @param Request     $request
+     * @param string|null $message
+     *
+     * @return mixed|void
+     */
+    public function failed(Request $request, string $message = null)
+    {
+        $this->exit($message ? "ERR: {$message}" : 'ERR');
     }
 
     /**

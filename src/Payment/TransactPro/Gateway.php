@@ -5,9 +5,14 @@ namespace Siqwell\Payment\TransactPro;
 use App\Entities\Invoice;
 use App\Exceptions\GatewayException;
 use Illuminate\Http\Request;
+use Illuminate\Routing\UrlGenerator;
 use Omnipay\Common\Message\ResponseInterface;
+use Omnipay\WebMoney\Message\CompletePurchaseResponse;
 use Siqwell\Payment\BaseDriver;
 use Siqwell\Payment\Contracts\PaymentContract;
+use Siqwell\Payment\Exceptions\DriverException;
+use Siqwell\Payment\Requests\CheckRequest;
+use Siqwell\Payment\Requests\CompleteRequest;
 
 /**
  * Class Gateway
@@ -32,89 +37,93 @@ class Gateway extends BaseDriver
         $client['email'] = $user->getAttribute('email');
 
         return [
-            'orderId'     => md5($gateway->getTransactionId() . time()), // TODO: Hash trait
-            'description' => $gateway->getDescription(),
-            'amount'      => $gateway->getAmount(),
-            'returnUrl'   => $gateway->getUrl('success'),
-            'cancelUrl'   => $gateway->getUrl('failed'),
-            'notifyUrl'   => $gateway->getUrl('notify'),
+            'orderId'     => md5($contract->getId() . time()),
+            'description' => $contract->getDescription(),
+            'amount'      => $contract->getAmount(),
+            'returnUrl'   => $contract->getSuccessUrl(),
+            'cancelUrl'   => $contract->getFailedUrl(),
+            'notifyUrl'   => $this->getNotifyUrl($contract),
             'client'      => $client
         ];
     }
 
     /**
-     * @param Request        $request
+     * @param Request $request
      *
-     * @return array
-     * @throws GatewayException
+     * @return CompleteRequest
+     * @throws DriverException
      */
-    public function complete(Request $request): array
+    public function complete(Request $request): CompleteRequest
     {
+        if (!$payment_id = $request->get('payment_id')) {
+            throw new DriverException('Please specity payment ID');
+        }
+
         if (!$transactionId = $request->get('ID')) {
-            throw new GatewayException('Please specify transaction ID');
+            throw new DriverException('Please specify transaction ID');
         }
 
         if ($request->get('Status') !== 'Success') {
-            throw new GatewayException('Transaction is not success');
+            throw new DriverException('Transaction is not success');
         }
 
-        if (!$invoice = $this->getInvoice()) {
-            $invoice = Invoice::whereHas('transactions', function($q) use($transactionId) {
-                $q->where('driver', $this->gateway)->where('transaction_id', $transactionId);
-            })->first();
+        /** @var CompletePurchaseResponse $response */
+        $response = $this->omnipay->completePurchase(['transactionId' => $transactionId])->send();
+
+        if (!$reference = $response->getTransactionReference()) {
+            $reference = [];
         }
 
-        if (!$invoice) {
-            throw new GatewayException('No invoice found');
+        if (is_array($reference)) {
+            $reference = array_merge($reference, [
+                'transactionId' => $transactionId
+            ]);
         }
 
-        if (!$invoice->transactions()->where('transaction_id', $transactionId)->first()) {
-            throw new GatewayException('This transaction is not attached to invoice');
+        return new CompleteRequest($payment_id, $reference);
+    }
+
+    /**
+     * @param PaymentContract $contract
+     * @param array           $reference
+     *
+     * @return CheckRequest
+     * @throws DriverException
+     */
+    public function check(PaymentContract $contract, $reference = [])
+    {
+        if (!isset($reference['transactionId']) || !$transactionId = $reference['transactionId']) {
+            throw new DriverException('Please specify transactionId');
         }
 
-        return [
-            'transactionId' => $transactionId
-        ];
+        /** @var CompletePurchaseResponse $response */
+        $response = $this->omnipay->completePurchase([
+            'transactionId' => $reference['transactionId']
+        ])->send();
+
+        $responseReference = $response->getTransactionReference();
+
+        if ($response->isSuccessful()) {
+            $status = CheckRequest::STATUS_COMPLETED;
+        } else {
+            $status = CheckRequest::STATUS_DECLINED;
+        }
+
+        return new CheckRequest($contract->getId(), $status, $responseReference);
     }
 
     /**
      * @param PaymentContract $contract
      *
-     * @return array
-     * @throws GatewayException
+     * @return mixed
      */
-    public function check(PaymentContract $contract): array
+    private function getNotifyUrl(PaymentContract $contract)
     {
-        if (!$invoice = $this->getInvoice()) {
-            throw new GatewayException('No invoice found');
-        }
-
-        if ($transaction = !$invoice->transactions()->first()) {
-            throw new GatewayException('Transaction is not attached to invoice');
-        }
-
-        return [
-            'transactionId' => $transaction->getAttribute('transaction_id')
-        ];
-    }
-
-    /**
-     * @param ResponseInterface $response
-     *
-     * @return mixed|void
-     */
-    public function setReference(ResponseInterface $response)
-    {
-        $invoice = $this->getInvoice();
-
-        if ($response->isSuccessful()) {
-            /** @var ResponseInterface $response */
-            $invoice->transactions()->create([
-                'driver' => $this->gateway,
-                'transaction_id' => $response->getTransactionId()
-            ]);
-        }
-
-        parent::setReference($response);
+        return app(UrlGenerator::class)
+            ->to(
+                $contract->getResultUrl(),
+                ['payment_id' => $contract->getId()],
+                null
+            );
     }
 }

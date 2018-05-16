@@ -26,8 +26,7 @@ class Gateway extends BaseDriver
             'amount'        => $contract->getAmount(),
             'returnUrl'     => $contract->getSuccessUrl(),
             'cancelUrl'     => $contract->getFailedUrl(),
-            //TODO ResultUrl???
-            'notifyUrl'     => $contract->getUrl('notify'),
+            'notifyUrl'     => $contract->getResultUrl(),
         ];
     }
 

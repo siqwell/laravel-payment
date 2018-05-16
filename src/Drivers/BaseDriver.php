@@ -2,6 +2,7 @@
 namespace Siqwell\Payment;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Omnipay\Common\AbstractGateway;
 use Omnipay\Common\Exception\RuntimeException;
 use Siqwell\Omnipay\Omnipay;
@@ -9,12 +10,13 @@ use Siqwell\Payment\Contracts\DriverContract;
 use Siqwell\Payment\Contracts\PaymentContract;
 use Siqwell\Payment\Exceptions\DriverException;
 use Siqwell\Payment\Exceptions\OperationException;
+use Siqwell\Payment\Requests\CheckRequest;
 use Siqwell\Payment\Requests\CompleteRequest;
 use Siqwell\Payment\Requests\PurchaseRequest;
 use Siqwell\Payment\Traits\ExitTrait;
 
 /**
- * Class AbstractDriver
+ * Class BaseDriver
  * @package Siqwell\Payment
  */
 class BaseDriver implements DriverContract
@@ -89,10 +91,10 @@ class BaseDriver implements DriverContract
     /**
      * @param PaymentContract $contract
      *
-     * @return array
+     * @return CheckRequest|array
      * @throws OperationException
      */
-    public function check(PaymentContract $contract): array
+    public function check(PaymentContract $contract, $reference = [])
     {
         throw new OperationException(sprintf('Method %s is not implemented', __FUNCTION__));
     }
@@ -100,21 +102,20 @@ class BaseDriver implements DriverContract
     /**
      * @param Request $request
      *
-     * @return mixed|void
+     * @return Response
      */
-    public function success(Request $request)
+    public function success(Request $request): Response
     {
-        $this->exit('YES');
+        return new Response('Success', 200);
     }
-
     /**
-     * @param Request     $request
-     * @param string|null $message
+     * @param Request $request
+     * @param string  $message
      *
-     * @return mixed|void
+     * @return Response
      */
-    public function failed(Request $request, string $message = null)
+    public function failed(Request $request, string $message = null): Response
     {
-        $this->exit($message ? "ERR: {$message}" : 'ERR');
+        return new Response('Error', 402);
     }
 }

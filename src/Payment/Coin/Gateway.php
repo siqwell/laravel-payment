@@ -28,8 +28,7 @@ class Gateway extends BaseDriver
             'description'   => $contract->getDescription(),
             'currency2'     => $gateway->getParameterByKey('currency2'),
             'amount'        => $contract->getAmount(),
-            //TODO NotifyUrl????
-            'notifyUrl'     => $contract->getUrl('notify'),
+            'notifyUrl'     => $contract->getResultUrl(),
         ];
     }
 
