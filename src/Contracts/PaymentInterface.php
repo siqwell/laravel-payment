@@ -1,5 +1,5 @@
 <?php
-namespace src\Contracts;
+namespace Siqwell\Payment\Contracts;
 
 interface PaymentInterface
 {
