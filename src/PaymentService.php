@@ -3,6 +3,7 @@ namespace Siqwell\Payment;
 
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Omnipay\Common\Exception\InvalidResponseException;
 use Siqwell\Payment\Contracts\DriverContract;
 use Siqwell\Payment\Contracts\PaymentContract;
@@ -70,10 +71,10 @@ class PaymentService
      * @param Request               $request
      * @param PaymentInterface|null $payment
      *
-     * @return CompleteRequest
+     * @return Response
      * @throws PurchaseException
      */
-    public function complete(Gateway $gateway, Request $request, PaymentInterface $payment = null): CompleteRequest
+    public function complete(Gateway $gateway, Request $request, PaymentInterface $payment = null): Response
     {
         /** @var DriverContract $driver */
         if (!$driver = $this->factory->create($gateway->getName(), $gateway->getDriver())) {
@@ -86,9 +87,9 @@ class PaymentService
             event(new PurchaseComplete($complete));
         } catch (InvalidResponseException $exception) {
             event(new PurchaseFailed($request, $exception));
-            $driver->failed($request, $exception->getMessage());
+            return $driver->failed($request, $exception->getMessage());
         }
 
-        $driver->success($request);
+        return $driver->success($request);
     }
 }
