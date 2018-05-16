@@ -52,24 +52,32 @@ interface PaymentContract
     public function getClient(): array;
 
     /**
+     * @param array $params
+     *
      * @return string
      */
-    public function getResultUrl(): string;
+    public function getResultUrl(array $params = []): string;
 
     /**
+     * @param array $params
+     *
      * @return string
      */
-    public function getSuccessUrl(): string;
+    public function getSuccessUrl(array $params = []): string;
 
     /**
+     * @param array $params
+     *
      * @return string
      */
-    public function getReturnUrl(): string;
+    public function getReturnUrl(array $params = []): string;
 
     /**
+     * @param array $params
+     *
      * @return string
      */
-    public function getFailedUrl(): string;
+    public function getFailedUrl(array $params = []): string;
 
     /**
      * @param string $key

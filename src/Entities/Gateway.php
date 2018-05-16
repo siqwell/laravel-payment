@@ -92,10 +92,6 @@ class Gateway extends Model implements GatewayContract
      */
     public function getParameterByKey(string $key): ?string
     {
-        if (isset($this->getParams()[$key])) {
-            return $this->getParams()[$key];
-        }
-
-        return null;
+        return optional($this->getParams())->{$key};
     }
 }

@@ -8,6 +8,7 @@ use Omnipay\Common\Exception\RuntimeException;
 use Siqwell\Omnipay\Omnipay;
 use Siqwell\Payment\Contracts\DriverContract;
 use Siqwell\Payment\Contracts\PaymentContract;
+use Siqwell\Payment\Contracts\PaymentInterface;
 use Siqwell\Payment\Entities\Gateway;
 use Siqwell\Payment\Exceptions\DriverException;
 use Siqwell\Payment\Exceptions\OperationException;
@@ -68,23 +69,25 @@ class BaseDriver implements DriverContract
     }
 
     /**
-     * @param PaymentContract $contract
+     * @param PaymentContract       $contract
+     * @param PaymentInterface|null $payment
      *
      * @return PurchaseRequest
      * @throws OperationException
      */
-    public function purchase(PaymentContract $contract): PurchaseRequest
+    public function purchase(PaymentContract $contract, PaymentInterface $payment = null): PurchaseRequest
     {
         throw new OperationException(sprintf('Method %s is not implemented', __FUNCTION__));
     }
 
     /**
-     * @param Request $request
+     * @param Request               $request
+     * @param PaymentInterface|null $payment
      *
      * @return CompleteRequest
      * @throws OperationException
      */
-    public function complete(Request $request): CompleteRequest
+    public function complete(Request $request, PaymentInterface $payment = null): CompleteRequest
     {
         throw new OperationException(sprintf('Method %s is not implemented', __FUNCTION__));
     }

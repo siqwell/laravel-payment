@@ -3,11 +3,11 @@
 namespace Siqwell\Payment\TransactPro;
 
 use Illuminate\Http\Request;
-use Illuminate\Routing\UrlGenerator;
 use Omnipay\WebMoney\Message\CompletePurchaseResponse;
 use Omnipay\WebMoney\Message\PurchaseResponse;
 use Siqwell\Payment\BaseDriver;
 use Siqwell\Payment\Contracts\PaymentContract;
+use Siqwell\Payment\Contracts\PaymentInterface;
 use Siqwell\Payment\Exceptions\DriverException;
 use Siqwell\Payment\Requests\CheckRequest;
 use Siqwell\Payment\Requests\CompleteRequest;
@@ -21,18 +21,19 @@ use Siqwell\Payment\Support\Location;
 class Gateway extends BaseDriver
 {
     /**
-     * @param PaymentContract $contract
+     * @param PaymentContract       $contract
+     * @param PaymentInterface|null $payment
      *
      * @return PurchaseRequest
      */
-    public function purchase(PaymentContract $contract): PurchaseRequest
+    public function purchase(PaymentContract $contract, PaymentInterface $payment = null): PurchaseRequest
     {
         /** @var PurchaseResponse $result */
         $result = $this->omnipay->purchase([
             'transactionId' => md5($contract->getId() . time()),
             'amount'        => $contract->getAmount(),
             'description'   => $contract->getDescription(),
-            'notifyUrl'     => $this->getNotifyUrl($contract),
+            'notifyUrl'     => $contract->getResultUrl(['payment_id' => $contract->getId()]),
             'returnUrl'     => $contract->getReturnUrl(),
             'cancelUrl'     => $contract->getFailedUrl(),
             'client'        => $contract->getClient()
@@ -42,12 +43,13 @@ class Gateway extends BaseDriver
     }
 
     /**
-     * @param Request $request
+     * @param Request               $request
+     * @param PaymentInterface|null $payment
      *
      * @return CompleteRequest
      * @throws DriverException
      */
-    public function complete(Request $request): CompleteRequest
+    public function complete(Request $request, PaymentInterface $payment = null): CompleteRequest
     {
         if (!$payment_id = $request->get('payment_id')) {
             throw new DriverException('Please specity payment ID');
@@ -104,20 +106,5 @@ class Gateway extends BaseDriver
         }
 
         return new CheckRequest($contract->getId(), $status, $responseReference);
-    }
-
-    /**
-     * @param PaymentContract $contract
-     *
-     * @return mixed
-     */
-    private function getNotifyUrl(PaymentContract $contract)
-    {
-        return app(UrlGenerator::class)
-            ->to(
-                $contract->getResultUrl(),
-                ['payment_id' => $contract->getId()],
-                null
-            );
     }
 }

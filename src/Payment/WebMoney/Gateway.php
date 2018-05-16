@@ -6,6 +6,7 @@ use Omnipay\WebMoney\Message\CompletePurchaseResponse;
 use Omnipay\WebMoney\Message\PurchaseResponse;
 use Siqwell\Payment\BaseDriver;
 use Siqwell\Payment\Contracts\PaymentContract;
+use Siqwell\Payment\Contracts\PaymentInterface;
 use Siqwell\Payment\Requests\CompleteRequest;
 use Siqwell\Payment\Requests\PurchaseRequest;
 use Siqwell\Payment\Support\Form;
@@ -17,11 +18,12 @@ use Siqwell\Payment\Support\Form;
 class Gateway extends BaseDriver
 {
     /**
-     * @param PaymentContract $contract
+     * @param PaymentContract       $contract
+     * @param PaymentInterface|null $payment
      *
      * @return PurchaseRequest
      */
-    public function purchase(PaymentContract $contract): PurchaseRequest
+    public function purchase(PaymentContract $contract, PaymentInterface $payment = null): PurchaseRequest
     {
         /** @var PurchaseResponse $result */
         $result = $this->omnipay->purchase(
@@ -34,11 +36,12 @@ class Gateway extends BaseDriver
     }
 
     /**
-     * @param Request $request
+     * @param Request               $request
+     * @param PaymentInterface|null $payment
      *
      * @return CompleteRequest
      */
-    public function complete(Request $request): CompleteRequest
+    public function complete(Request $request, PaymentInterface $payment = null): CompleteRequest
     {
         if ($request->input('LMI_PREREQUEST')) {
             $this->exit('YES');
@@ -48,15 +51,10 @@ class Gateway extends BaseDriver
             $this->exit('YES');
         }
 
-        if (app()->isLocal()) {
-            $payment_id = $request->input('LMI_PAYMENT_NO');
-            $reference  = str_random();
-        } else {
-            /** @var CompletePurchaseResponse $response */
-            $response   = $this->omnipay->completePurchase($request->all())->send();
-            $reference  = $response->getTransactionReference();
-            $payment_id = $response->getTransactionId();
-        }
+        /** @var CompletePurchaseResponse $response */
+        $response   = $this->omnipay->completePurchase($request->all())->send();
+        $reference  = $response->getTransactionReference();
+        $payment_id = $response->getTransactionId();
 
         return new CompleteRequest($payment_id, $reference);
     }

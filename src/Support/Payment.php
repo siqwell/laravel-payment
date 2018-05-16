@@ -1,6 +1,7 @@
 <?php
 namespace Siqwell\Payment\Support;
 
+use Illuminate\Routing\UrlGenerator;
 use Siqwell\Payment\Contracts\GatewayContract;
 use Siqwell\Payment\Contracts\PaymentContract;
 
@@ -100,27 +101,43 @@ class Payment implements PaymentContract
     }
 
     /**
+     * @param array $params
+     *
      * @return string
      */
-    public function getResultUrl(): string
+    public function getResultUrl(array $params = []): string
     {
-        return $this->attributes['result_url'];
+        return app(UrlGenerator::class)->to($this->attributes['result_url'], $params);
     }
 
     /**
+     * @param array $params
+     *
      * @return string
      */
-    public function getSuccessUrl(): string
+    public function getSuccessUrl(array $params = []): string
     {
-        return $this->attributes['success_url'];
+        return app(UrlGenerator::class)->to($this->attributes['success_url'], $params);
     }
 
     /**
+     * @param array $params
+     *
      * @return string
      */
-    public function getFailedUrl(): string
+    public function getFailedUrl(array $params = []): string
     {
-        return $this->attributes['failed_url'];
+        return app(UrlGenerator::class)->to($this->attributes['failed_url'], $params);
+    }
+
+    /**
+     * @param array $params
+     *
+     * @return string
+     */
+    public function getReturnUrl(array $params = []): string
+    {
+        return app(UrlGenerator::class)->to($this->attributes['return_url'], $params);
     }
 
     /**
@@ -139,14 +156,6 @@ class Payment implements PaymentContract
     public function getAttributeByKey(string $key)
     {
         return isset($this->attributes[$key]) ? $this->attributes[$key] : null;
-    }
-
-    /**
-     * @return string
-     */
-    public function getReturnUrl(): string
-    {
-        return $this->attributes['return_url'];
     }
 
     /**

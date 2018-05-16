@@ -16,19 +16,20 @@ use Siqwell\Payment\Requests\PurchaseRequest;
 interface DriverContract
 {
     /**
-     * @param PaymentContract $contract
+     * @param PaymentContract       $contract
+     * @param PaymentInterface|null $payment
      *
      * @return PurchaseRequest
      */
-    public function purchase(PaymentContract $contract): PurchaseRequest;
+    public function purchase(PaymentContract $contract, PaymentInterface $payment = null): PurchaseRequest;
 
     /**
-     * @param Request $request
+     * @param Request               $request
+     * @param PaymentInterface|null $payment
      *
      * @return CompleteRequest
-     * @throws InvalidResponseException
      */
-    public function complete(Request $request): CompleteRequest;
+    public function complete(Request $request, PaymentInterface $payment = null): CompleteRequest;
 
     /**
      * @param PaymentContract $contract

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Omnipay\Common\Exception\InvalidResponseException;
 use Siqwell\Payment\Contracts\DriverContract;
 use Siqwell\Payment\Contracts\PaymentContract;
+use Siqwell\Payment\Contracts\PaymentInterface;
 use Siqwell\Payment\Entities\Gateway;
 use Siqwell\Payment\Events\PurchaseComplete;
 use Siqwell\Payment\Events\PurchaseFailed;
@@ -43,12 +44,13 @@ class PaymentService
     }
 
     /**
-     * @param PaymentContract $contract
+     * @param PaymentContract       $contract
+     * @param PaymentInterface|null $payment
      *
-     * @return Requests\PurchaseRequest
+     * @return PurchaseRequest
      * @throws PurchaseException
      */
-    public function purchase(PaymentContract $contract): PurchaseRequest
+    public function purchase(PaymentContract $contract, PaymentInterface $payment = null): PurchaseRequest
     {
         /** @var DriverContract $driver */
         if (!$driver = $this->factory->create($contract->getGatewayName(), $contract->getDriver())) {
@@ -64,13 +66,14 @@ class PaymentService
     }
 
     /**
-     * @param Gateway $gateway
-     * @param Request $request
+     * @param Gateway               $gateway
+     * @param Request               $request
+     * @param PaymentInterface|null $payment
      *
-     * @return CompleteRequest|void
+     * @return CompleteRequest
      * @throws PurchaseException
      */
-    public function complete(Gateway $gateway, Request $request): CompleteRequest
+    public function complete(Gateway $gateway, Request $request, PaymentInterface $payment = null): CompleteRequest
     {
         /** @var DriverContract $driver */
         if (!$driver = $this->factory->create($gateway->getName(), $gateway->getDriver())) {
@@ -79,7 +82,7 @@ class PaymentService
 
         try {
             /** @var CompleteRequest $complete */
-            $complete = $driver->complete($request);
+            $complete = $driver->complete($request, $payment);
             event(new PurchaseComplete($complete));
         } catch (InvalidResponseException $exception) {
             event(new PurchaseFailed($request, $exception));

@@ -4,10 +4,10 @@ namespace Siqwell\Payment\Drivers;
 use Illuminate\Http\Request;
 use Siqwell\Payment\BaseDriver;
 use Siqwell\Payment\Contracts\PaymentContract;
+use Siqwell\Payment\Contracts\PaymentInterface;
 use Siqwell\Payment\Requests\CompleteRequest;
 use Siqwell\Payment\Requests\PurchaseRequest;
 use Siqwell\Payment\Support\Location;
-use Siqwell\Payment\Traits\ExitTrait;
 
 /**
  * Class Dummy
@@ -15,25 +15,26 @@ use Siqwell\Payment\Traits\ExitTrait;
  */
 class Gateway extends BaseDriver
 {
-    use ExitTrait;
     /**
-     * @param PaymentContract $contract
+     * @param PaymentContract       $contract
+     * @param PaymentInterface|null $payment
      *
      * @return PurchaseRequest
      */
-    public function purchase(PaymentContract $contract): PurchaseRequest
+    public function purchase(PaymentContract $contract, PaymentInterface $payment = null): PurchaseRequest
     {
         return new PurchaseRequest(
-            new Location($contract->getResultUrl() . '?payment_id=' . $contract->getId())
+            new Location($contract->getResultUrl(['payment_id' => $contract->getId()]))
         );
     }
 
     /**
-     * @param Request $request
+     * @param Request               $request
+     * @param PaymentInterface|null $payment
      *
      * @return CompleteRequest
      */
-    public function complete(Request $request): CompleteRequest
+    public function complete(Request $request, PaymentInterface $payment = null): CompleteRequest
     {
         return new CompleteRequest($request->get('payment_id'), time());
     }
