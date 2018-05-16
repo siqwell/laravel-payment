@@ -2,6 +2,7 @@
 namespace Siqwell\Payment;
 
 use Siqwell\Payment\Contracts\DriverContract;
+use Siqwell\Payment\Contracts\GatewayContract;
 use Siqwell\Payment\Exceptions\RuntimeException;
 
 /**
@@ -10,23 +11,20 @@ use Siqwell\Payment\Exceptions\RuntimeException;
  */
 class DriverFactory
 {
-    const GATEWAY = 'Gateway.php';
-
     /**
-     * @param string $gateway
-     * @param string $driver
+     * @param GatewayContract $gateway
      *
      * @return DriverContract
      */
-    public function create(string $gateway, string $driver): DriverContract
+    public function create(GatewayContract $gateway): DriverContract
     {
-        $class = $this->namespace($driver);
+        $class = $this->namespace($gateway->getDriver());
 
         if (!class_exists($class)) {
             throw new RuntimeException(sprintf('Class %s not found', $class));
         }
 
-        return new $class($driver, $gateway);
+        return new $class($gateway);
     }
 
     /**

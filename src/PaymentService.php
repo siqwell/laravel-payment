@@ -54,7 +54,7 @@ class PaymentService
     public function purchase(PaymentContract $contract, PaymentInterface $payment = null): PurchaseRequest
     {
         /** @var DriverContract $driver */
-        if (!$driver = $this->factory->create($contract->getGatewayName(), $contract->getDriver())) {
+        if (!$driver = $this->factory->create($contract->getGateway())) {
             throw new PurchaseException("Driver {$contract->getDriver()} not found");
         }
 
@@ -77,7 +77,7 @@ class PaymentService
     public function complete(Gateway $gateway, Request $request, PaymentInterface $payment = null): Response
     {
         /** @var DriverContract $driver */
-        if (!$driver = $this->factory->create($gateway->getName(), $gateway->getDriver())) {
+        if (!$driver = $this->factory->create($gateway)) {
             throw new PurchaseException("Driver {$gateway->getDriver()} not found");
         }
 
