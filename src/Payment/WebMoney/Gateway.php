@@ -62,27 +62,6 @@ class Gateway extends BaseDriver
     }
 
     /**
-     * @param Request $request
-     *
-     * @return mixed|void
-     */
-    public function success(Request $request)
-    {
-        $this->exit('YES');
-    }
-
-    /**
-     * @param Request     $request
-     * @param string|null $message
-     *
-     * @return mixed|void
-     */
-    public function failed(Request $request, string $message = null)
-    {
-        $this->exit($message ? "ERR: {$message}" : 'ERR');
-    }
-
-    /**
      * @param PaymentContract $contract
      *
      * @return array

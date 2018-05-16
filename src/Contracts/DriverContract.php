@@ -34,10 +34,10 @@ interface DriverContract
      * @param PaymentContract $contract
      * @param array           $reference
      *
-     * @return CheckRequest|array
+     * @return CheckRequest
      * @throws OperationException
      */
-    public function check(PaymentContract $contract, $reference = []);
+    public function check(PaymentContract $contract, $reference = []): CheckRequest;
 
     /**
      * @param Request $request

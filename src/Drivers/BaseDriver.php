@@ -84,18 +84,19 @@ class BaseDriver implements DriverContract
      * @return CompleteRequest
      * @throws OperationException
      */
-    public function complete(Request $request)
+    public function complete(Request $request): CompleteRequest
     {
         throw new OperationException(sprintf('Method %s is not implemented', __FUNCTION__));
     }
 
     /**
      * @param PaymentContract $contract
+     * @param array           $reference
      *
-     * @return CheckRequest|array
+     * @return CheckRequest
      * @throws OperationException
      */
-    public function check(PaymentContract $contract, $reference = [])
+    public function check(PaymentContract $contract, $reference = []): CheckRequest
     {
         throw new OperationException(sprintf('Method %s is not implemented', __FUNCTION__));
     }

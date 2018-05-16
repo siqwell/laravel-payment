@@ -2,11 +2,8 @@
 
 namespace Siqwell\Payment\TransactPro;
 
-use App\Entities\Invoice;
-use App\Exceptions\GatewayException;
 use Illuminate\Http\Request;
 use Illuminate\Routing\UrlGenerator;
-use Omnipay\Common\Message\ResponseInterface;
 use Omnipay\WebMoney\Message\CompletePurchaseResponse;
 use Omnipay\WebMoney\Message\PurchaseResponse;
 use Siqwell\Payment\BaseDriver;
@@ -87,7 +84,7 @@ class Gateway extends BaseDriver
      * @return CheckRequest
      * @throws DriverException
      */
-    public function check(PaymentContract $contract, $reference = [])
+    public function check(PaymentContract $contract, $reference = []): CheckRequest
     {
         if (!isset($reference['transactionId']) || !$transactionId = $reference['transactionId']) {
             throw new DriverException('Please specify transactionId');
