@@ -11,6 +11,7 @@ use Siqwell\Payment\Exceptions\RuntimeException;
 class DriverFactory
 {
     const GATEWAY = 'Gateway.php';
+
     /**
      * @param string $gateway
      * @param string $driver
@@ -40,7 +41,8 @@ class DriverFactory
      *      PayPal\Express      => \Omnipay\PayPal\ExpressGateway
      *      PayPal_Express      => \Omnipay\PayPal\ExpressGateway
      *
-     * @param  string  $shortName The short gateway name
+     * @param  string $shortName The short gateway name
+     *
      * @return string  The fully namespaced gateway class name
      */
     public function namespace($shortName)
@@ -55,6 +57,6 @@ class DriverFactory
             $shortName .= '\\';
         }
 
-        return '\\Siqwell\\Payment\\'.$shortName.'Gateway';
+        return '\\Siqwell\\Payment\\' . $shortName . 'Gateway';
     }
 }
