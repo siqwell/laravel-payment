@@ -8,7 +8,6 @@ use Omnipay\CoinPayments\Message\PurchaseResponse;
 use Siqwell\Payment\BaseDriver;
 use Siqwell\Payment\Contracts\PaymentContract;
 use Siqwell\Payment\Contracts\PaymentInterface;
-use Siqwell\Payment\Entities\Gateway as GatewayEntity;
 use Siqwell\Payment\Exceptions\DriverException;
 use Siqwell\Payment\Requests\CompleteRequest;
 use Siqwell\Payment\Requests\PurchaseRequest;
@@ -48,10 +47,8 @@ class Gateway extends BaseDriver
      */
     public function complete(Request $request, PaymentInterface $payment = null): CompleteRequest
     {
-        $payment_id = $payment->getInvoiceId();
-
-        if (!$payment_id && !$payment_id = $request->get('payment_id')) {
-            throw new DriverException('Please specity payment ID');
+        if (!$payment) {
+            throw new DriverException('Payment not provided');
         }
 
         /** @var CompletePurchaseResponse $response */
@@ -61,6 +58,6 @@ class Gateway extends BaseDriver
 
         $reference = $response->getTransactionReference();
 
-        return new CompleteRequest($payment_id, $reference);
+        return new CompleteRequest($payment->getInvoiceId(), $reference);
     }
 }

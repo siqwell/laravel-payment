@@ -57,10 +57,8 @@ class Gateway extends BaseDriver
      */
     public function complete(Request $request, PaymentInterface $payment = null): CompleteRequest
     {
-        $payment_id = $payment->getInvoiceId();
-
-        if (!$payment_id && !$payment_id = $request->get('payment_id')) {
-            throw new DriverException('Please specity payment ID');
+        if (!$payment) {
+            throw new DriverException('Payment not provided');
         }
 
         if (!$transactionId = $request->get('ID')) {
@@ -84,7 +82,7 @@ class Gateway extends BaseDriver
             ]);
         }
 
-        return new CompleteRequest($payment_id, $reference);
+        return new CompleteRequest($payment->getInvoiceId(), $reference);
     }
 
     /**
