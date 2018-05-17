@@ -1,6 +1,7 @@
 <?php
 namespace Siqwell\Payment\Support;
 
+use GuzzleHttp\Psr7\Uri;
 use Illuminate\Routing\UrlGenerator;
 use Siqwell\Payment\Contracts\GatewayContract;
 use Siqwell\Payment\Contracts\PaymentContract;
@@ -115,7 +116,7 @@ class Payment implements PaymentContract
      */
     public function getResultUrl(array $params = []): string
     {
-        return app(UrlGenerator::class)->to($this->attributes['result_url'], $params);
+        return (new Uri($this->attributes['result_url']))->withQuery(http_build_query($params));
     }
 
     /**
@@ -125,7 +126,7 @@ class Payment implements PaymentContract
      */
     public function getSuccessUrl(array $params = []): string
     {
-        return app(UrlGenerator::class)->to($this->attributes['success_url'], $params);
+        return (new Uri($this->attributes['success_url']))->withQuery(http_build_query($params));
     }
 
     /**
@@ -135,7 +136,7 @@ class Payment implements PaymentContract
      */
     public function getFailedUrl(array $params = []): string
     {
-        return app(UrlGenerator::class)->to($this->attributes['failed_url'], $params);
+        return (new Uri($this->attributes['failed_url']))->withQuery(http_build_query($params));
     }
 
     /**
@@ -145,7 +146,7 @@ class Payment implements PaymentContract
      */
     public function getReturnUrl(array $params = []): string
     {
-        return app(UrlGenerator::class)->to($this->attributes['return_url'], $params);
+        return (new Uri($this->attributes['return_url']))->withQuery(http_build_query($params));
     }
 
     /**

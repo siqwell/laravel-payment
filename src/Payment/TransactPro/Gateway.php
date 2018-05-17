@@ -25,6 +25,7 @@ class Gateway extends BaseDriver
      * @param PaymentInterface|null $payment
      *
      * @return PurchaseRequest
+     * @throws \Omnipay\Common\Exception\InvalidRequestException
      */
     public function purchase(PaymentContract $contract, PaymentInterface $payment = null): PurchaseRequest
     {
@@ -36,7 +37,7 @@ class Gateway extends BaseDriver
             'notifyUrl'     => $contract->getResultUrl(['payment_id' => $contract->getId()]),
             'returnUrl'     => $contract->getReturnUrl(),
             'cancelUrl'     => $contract->getFailedUrl(),
-            'client'        => $contract->getCustomer()
+            'client'        => $contract->getCustomer(),
         ])->send();
 
         return new PurchaseRequest(new Location($result->getRedirectUrl()));
