@@ -52,6 +52,20 @@ interface PaymentContract
     public function getCustomer(): array;
 
     /**
+     * @param string $key
+     *
+     * @return mixed|null
+     */
+    public function getCustomerValue(string $key);
+
+    /**
+     * @param array $params
+     *
+     * @return string
+     */
+    public function getNotifyUrl(array $params = []): string;
+
+    /**
      * @param array $params
      *
      * @return string

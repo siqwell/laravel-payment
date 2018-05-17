@@ -21,16 +21,25 @@ class PurchaseRequest
     protected $location;
 
     /**
+     * @var bool
+     */
+    protected $result;
+
+    /**
      * AbstractRequest constructor.
      *
      * @param null $result
      */
     public function __construct($result = null)
     {
+        $this->result = true;
+
         if ($result instanceof Form) {
             $this->form = $result;
         } elseif ($result instanceof Location) {
             $this->location = $result;
+        } else {
+            $this->result = false;
         }
     }
 
@@ -39,7 +48,7 @@ class PurchaseRequest
      */
     public function isSuccessful(): bool
     {
-        return false;
+        return $this->result;
     }
 
     /**

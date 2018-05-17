@@ -110,6 +110,30 @@ class Payment implements PaymentContract
     }
 
     /**
+     * @param string $key
+     *
+     * @return mixed|null
+     */
+    public function getCustomerValue(string $key)
+    {
+        if (!isset($this->attributes['customer'][$key])) {
+            return null;
+        }
+
+        return $this->attributes['customer'][$key];
+    }
+
+    /**
+     * @param array $params
+     *
+     * @return string
+     */
+    public function getNotifyUrl(array $params = []): string
+    {
+        return (new Uri($this->attributes['notify_url']))->withQuery(http_build_query($params));
+    }
+
+    /**
      * @param array $params
      *
      * @return string
