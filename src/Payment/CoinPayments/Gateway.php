@@ -35,6 +35,10 @@ class Gateway extends BaseDriver
             'notifyUrl'     => $contract->getResultUrl(['payment_id' => $contract->getId()])
         ])->send();
 
+        if (!$result->isSuccessful()) {
+            return new PurchaseRequest();
+        }
+
         return new PurchaseRequest(new Location($result->getRedirectUrl()));
     }
 
