@@ -35,10 +35,6 @@ class Gateway extends BaseDriver
             'notifyUrl'     => $contract->getResultUrl(['payment_id' => $contract->getId()])
         ])->send();
 
-        if (!$result->isSuccessful()) {
-            return new PurchaseRequest();
-        }
-
         return new PurchaseRequest(new Location($result->getRedirectUrl()));
     }
 
@@ -47,14 +43,9 @@ class Gateway extends BaseDriver
      * @param PaymentInterface|null $payment
      *
      * @return CompleteRequest
-     * @throws DriverException
      */
     public function complete(Request $request, PaymentInterface $payment = null): CompleteRequest
     {
-        if (!$payment) {
-            throw new DriverException('Payment not provided');
-        }
-
         /** @var CompletePurchaseResponse $response */
         $response = $this->omnipay->completePurchase([
             'amount' => $payment->getAmount()
