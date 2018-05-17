@@ -25,6 +25,7 @@ class Gateway extends BaseDriver
      * @param PaymentInterface|null $payment
      *
      * @return PurchaseRequest
+     * @throws DriverException
      * @throws \Omnipay\Common\Exception\InvalidRequestException
      */
     public function purchase(PaymentContract $contract, PaymentInterface $payment = null): PurchaseRequest
@@ -41,11 +42,11 @@ class Gateway extends BaseDriver
             'clientIp'      => $contract->getCustomerValue('ip')
         ])->send();
 
-        if ($result->isSuccessful()) {
-            return new PurchaseRequest(new Location($result->getRedirectUrl()));
+        if (!$redirect = $result->getRedirectUrl()) {
+            throw new DriverException($result->getMessage());
         }
 
-        return new PurchaseRequest;
+        return new PurchaseRequest(new Location($redirect));
     }
 
     /**
@@ -57,10 +58,6 @@ class Gateway extends BaseDriver
      */
     public function complete(Request $request, PaymentInterface $payment = null): CompleteRequest
     {
-        if (!$payment) {
-            throw new DriverException('Payment not provided');
-        }
-
         if (!$transactionId = $request->get('ID')) {
             throw new DriverException('Please specify transaction ID');
         }

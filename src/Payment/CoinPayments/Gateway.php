@@ -24,6 +24,7 @@ class Gateway extends BaseDriver
      * @param PaymentInterface|null $payment
      *
      * @return PurchaseRequest
+     * @throws DriverException
      */
     public function purchase(PaymentContract $contract, PaymentInterface $payment = null): PurchaseRequest
     {
@@ -32,10 +33,16 @@ class Gateway extends BaseDriver
             'amount'        => $contract->getAmount(),
             'transactionId' => $contract->getId(),
             'description'   => $contract->getDescription(),
-            'notifyUrl'     => $contract->getResultUrl(['payment_id' => $contract->getId()])
+
+            // Result URL Include Invoice ID.
+            'notifyUrl'     => $contract->getResultUrl()
         ])->send();
 
-        return new PurchaseRequest(new Location($result->getRedirectUrl()));
+        if(!$redirect = $result->getRedirectUrl()){
+            throw new DriverException($result->getMessage());
+        }
+
+        return new PurchaseRequest(new Location($redirect));
     }
 
     /**
