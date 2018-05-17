@@ -32,14 +32,10 @@ class PurchaseRequest
      */
     public function __construct($result = null)
     {
-        $this->result = true;
-
         if ($result instanceof Form) {
             $this->form = $result;
         } elseif ($result instanceof Location) {
             $this->location = $result;
-        } else {
-            $this->result = false;
         }
     }
 
@@ -48,7 +44,7 @@ class PurchaseRequest
      */
     public function isSuccessful(): bool
     {
-        return $this->result;
+        return false;
     }
 
     /**
