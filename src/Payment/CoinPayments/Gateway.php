@@ -1,6 +1,6 @@
 <?php
 
-namespace Siqwell\Payment\Coin;
+namespace Siqwell\Payment\CoinPayments;
 
 use Illuminate\Http\Request;
 use Omnipay\CoinPayments\Message\CompletePurchaseResponse;
@@ -34,6 +34,10 @@ class Gateway extends BaseDriver
             'description'   => $contract->getDescription(),
             'notifyUrl'     => $contract->getResultUrl(['payment_id' => $contract->getId()])
         ])->send();
+
+        if (!$result->isSuccessful()) {
+            return new PurchaseRequest();
+        }
 
         return new PurchaseRequest(new Location($result->getRedirectUrl()));
     }
