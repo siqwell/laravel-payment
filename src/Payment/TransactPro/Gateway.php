@@ -25,6 +25,7 @@ class Gateway extends BaseDriver
      * @param PaymentInterface|null $payment
      *
      * @return PurchaseRequest
+     * @throws \Omnipay\Common\Exception\InvalidRequestException
      */
     public function purchase(PaymentContract $contract, PaymentInterface $payment = null): PurchaseRequest
     {

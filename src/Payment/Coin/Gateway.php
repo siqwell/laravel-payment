@@ -28,16 +28,12 @@ class Gateway extends BaseDriver
      */
     public function purchase(PaymentContract $contract, PaymentInterface $payment = null): PurchaseRequest
     {
-        /** @var GatewayEntity $gateway */
-        $gateway = $this->gateway;
-
         /** @var PurchaseResponse $result */
         $result = $this->omnipay->purchase([
             'amount'        => $contract->getAmount(),
             'transactionId' => $contract->getId(),
             'description'   => $contract->getDescription(),
-            'notifyUrl'     => $contract->getResultUrl(['payment_id' => $contract->getId()]),
-            'currency2'     => $gateway->getParameterByKey('currency2'),
+            'notifyUrl'     => $contract->getResultUrl(['payment_id' => $contract->getId()])
         ])->send();
 
         return new PurchaseRequest(new Location($result->getRedirectUrl()));
@@ -52,7 +48,9 @@ class Gateway extends BaseDriver
      */
     public function complete(Request $request, PaymentInterface $payment = null): CompleteRequest
     {
-        if (!$payment_id = $request->get('payment_id')) {
+        $payment_id = $payment->getInvoiceId();
+
+        if (!$payment_id && !$payment_id = $request->get('payment_id')) {
             throw new DriverException('Please specity payment ID');
         }
 
