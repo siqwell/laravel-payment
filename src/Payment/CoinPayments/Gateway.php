@@ -1,6 +1,6 @@
 <?php
 
-namespace Siqwell\Payment\Coin;
+namespace Siqwell\Payment\CoinPayments;
 
 use Illuminate\Http\Request;
 use Omnipay\CoinPayments\Message\CompletePurchaseResponse;
@@ -14,8 +14,8 @@ use Siqwell\Payment\Requests\PurchaseRequest;
 use Siqwell\Payment\Support\Location;
 
 /**
- * Class CoinPayments
- * @package App\Services\Gateway\Drivers
+ * Class Gateway
+ * @package Siqwell\Payment\CoinPayments
  */
 class Gateway extends BaseDriver
 {
