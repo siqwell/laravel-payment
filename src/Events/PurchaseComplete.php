@@ -36,4 +36,12 @@ class PurchaseComplete
     {
         return $this->request->getPaymentId();
     }
+
+    /**
+     * @return mixed
+     */
+    public function getReference()
+    {
+        return $this->request->getReference();
+    }
 }
