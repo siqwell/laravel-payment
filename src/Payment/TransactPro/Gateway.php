@@ -35,7 +35,7 @@ class Gateway extends BaseDriver
             'transactionId' => md5($contract->getId() . time()),
             'amount'        => $contract->getAmount(),
             'description'   => $contract->getDescription(),
-            'notifyUrl'     => $contract->getNotifyUrl(),
+            'notifyUrl'     => $contract->getResultUrl(),
             'returnUrl'     => $contract->getReturnUrl(),
             'cancelUrl'     => $contract->getFailedUrl(),
             'client'        => $contract->getCustomer(),
