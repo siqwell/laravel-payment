@@ -58,12 +58,8 @@ class Gateway extends BaseDriver
      */
     public function complete(Request $request, PaymentInterface $payment = null): CompleteRequest
     {
-        if (!$transactionId = $request->get('ID')) {
+        if (!$transactionId = $request->post('ID')) {
             throw new DriverException('Please specify transaction ID');
-        }
-
-        if ($request->get('Status') !== 'Success') {
-            throw new DriverException('Transaction is not success');
         }
 
         /** @var CompletePurchaseResponse $response */
