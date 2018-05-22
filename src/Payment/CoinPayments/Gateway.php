@@ -38,7 +38,7 @@ class Gateway extends BaseDriver
             'notifyUrl'     => $contract->getResultUrl()
         ])->send();
 
-        if(!$redirect = $result->getRedirectUrl()){
+        if (!$redirect = $result->getRedirectUrl()) {
             throw new DriverException($result->getMessage());
         }
 
