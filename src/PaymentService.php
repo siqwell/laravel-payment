@@ -60,7 +60,6 @@ class PaymentService
 
         /** @var PurchaseRequest $request */
         $request = $driver->purchase($contract);
-
         event(new PurchaseStart($contract, $request));
 
         return $request;
@@ -84,12 +83,14 @@ class PaymentService
         try {
             /** @var CompleteRequest $complete */
             $complete = $driver->complete($request, $payment);
+
             event(new PurchaseComplete($complete));
+
+            return $driver->success($request);
         } catch (InvalidResponseException $exception) {
             event(new PurchaseFailed($request, $exception));
+
             return $driver->failed($request, $exception->getMessage());
         }
-
-        return $driver->success($request);
     }
 }

@@ -3,6 +3,7 @@
 namespace Siqwell\Payment\TransactPro;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Omnipay\TransactPro\Message\CompletePurchaseResponse;
 use Omnipay\TransactPro\Message\PurchaseResponse;
 use Siqwell\Payment\BaseDriver;
@@ -69,17 +70,7 @@ class Gateway extends BaseDriver
         /** @var CompletePurchaseResponse $response */
         $response = $this->omnipay->completePurchase(['transactionId' => $transactionId])->send();
 
-        if (!$reference = $response->getTransactionReference()) {
-            $reference = [];
-        }
-
-        if (is_array($reference)) {
-            $reference = array_merge($reference, [
-                'transactionId' => $transactionId
-            ]);
-        }
-
-        return new CompleteRequest($payment->getInvoiceId(), $reference);
+        return new CompleteRequest($payment->getInvoiceId(), $response->getTransactionId(), $response->getTransactionReference());
     }
 
     /**

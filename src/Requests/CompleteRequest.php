@@ -25,11 +25,11 @@ class CompleteRequest
     /**
      * CompleteRequest constructor.
      *
-     * @param       $payment_id
-     * @param       $reference
-     * @param array $data
+     * @param        $payment_id
+     * @param string $reference
+     * @param array  $data
      */
-    public function __construct($payment_id, $reference, array $data = [])
+    public function __construct($payment_id, string $reference, array $data = [])
     {
         $this->payment_id = $payment_id;
         $this->reference  = $reference;
