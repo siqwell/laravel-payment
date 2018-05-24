@@ -8,6 +8,7 @@ use Omnipay\Common\Exception\InvalidResponseException;
 use Siqwell\Payment\Contracts\DriverContract;
 use Siqwell\Payment\Contracts\PaymentContract;
 use Siqwell\Payment\Contracts\PaymentInterface;
+use Siqwell\Payment\Contracts\StatusContract;
 use Siqwell\Payment\Entities\Gateway;
 use Siqwell\Payment\Events\PurchaseComplete;
 use Siqwell\Payment\Events\PurchaseFailed;
@@ -60,6 +61,7 @@ class PaymentService
 
         /** @var PurchaseRequest $request */
         $request = $driver->purchase($contract);
+
         event(new PurchaseStart($contract, $request));
 
         return $request;
@@ -84,9 +86,11 @@ class PaymentService
             /** @var CompleteRequest $complete */
             $complete = $driver->complete($request, $payment);
 
-            event(new PurchaseComplete($complete));
+            if ($complete->getStatus() == StatusContract::ACCEPT) {
+                event(new PurchaseComplete($complete));
 
-            return $driver->success($request);
+                return $driver->success($request);
+            }
         } catch (InvalidResponseException $exception) {
             event(new PurchaseFailed($request, $exception));
 

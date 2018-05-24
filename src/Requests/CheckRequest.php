@@ -10,15 +10,16 @@ class CheckRequest
     const
         STATUS_CREATED = 0,
         STATUS_PROCESSING = 1,
-        STATUS_COMPLETED  = 2,
-        STATUS_DECLINED   = 3,
-        STATUS_NOT_FOUND  = 4
-    ;
+        STATUS_COMPLETED = 2,
+        STATUS_DECLINED = 3,
+        STATUS_NOT_FOUND = 4;
 
     /** @var mixed */
     private $payment_id;
+
     /** @var mixed */
     private $status;
+
     /** @var mixed */
     private $reference;
 

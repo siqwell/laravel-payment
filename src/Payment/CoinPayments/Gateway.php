@@ -8,6 +8,7 @@ use Omnipay\CoinPayments\Message\PurchaseResponse;
 use Siqwell\Payment\BaseDriver;
 use Siqwell\Payment\Contracts\PaymentContract;
 use Siqwell\Payment\Contracts\PaymentInterface;
+use Siqwell\Payment\Contracts\StatusContract;
 use Siqwell\Payment\Exceptions\DriverException;
 use Siqwell\Payment\Requests\CompleteRequest;
 use Siqwell\Payment\Requests\PurchaseRequest;
@@ -58,8 +59,14 @@ class Gateway extends BaseDriver
             'amount' => $payment->getAmount()
         ])->send();
 
-        $reference = $response->getTransactionReference();
+        if ($response->isSuccessful()) {
+            return new CompleteRequest($payment->getInvoiceId(), StatusContract::ACCEPT, $response->getTransactionReference());
+        }
 
-        return new CompleteRequest($payment->getInvoiceId(), $reference);
+        if ($response->isCancelled()) {
+            return new CompleteRequest($payment->getInvoiceId(), StatusContract::CANCEL);
+        }
+
+        return new CompleteRequest($payment->getInvoiceId(), StatusContract::PROCESS);
     }
 }

@@ -8,6 +8,7 @@ use Omnipay\TransactPro\Message\PurchaseResponse;
 use Siqwell\Payment\BaseDriver;
 use Siqwell\Payment\Contracts\PaymentContract;
 use Siqwell\Payment\Contracts\PaymentInterface;
+use Siqwell\Payment\Contracts\StatusContract;
 use Siqwell\Payment\Exceptions\DriverException;
 use Siqwell\Payment\Requests\CheckRequest;
 use Siqwell\Payment\Requests\CompleteRequest;
@@ -65,7 +66,11 @@ class Gateway extends BaseDriver
         /** @var CompletePurchaseResponse $response */
         $response = $this->omnipay->completePurchase(['transactionId' => $transactionId])->send();
 
-        return new CompleteRequest($payment->getInvoiceId(), $response->getTransactionId(), $response->getTransactionReference());
+        if ($response->isSuccessful()) {
+            return new CompleteRequest($payment->getInvoiceId(), StatusContract::ACCEPT, $response->getTransactionId(), $response->getTransactionReference());
+        }
+
+        return new CompleteRequest($payment->getInvoiceId(), StatusContract::PROCESS);
     }
 
     /**

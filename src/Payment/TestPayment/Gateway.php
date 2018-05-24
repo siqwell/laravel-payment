@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use Siqwell\Payment\BaseDriver;
 use Siqwell\Payment\Contracts\PaymentContract;
 use Siqwell\Payment\Contracts\PaymentInterface;
+use Siqwell\Payment\Contracts\StatusContract;
 use Siqwell\Payment\Requests\CompleteRequest;
 use Siqwell\Payment\Requests\PurchaseRequest;
 use Siqwell\Payment\Support\Location;
@@ -36,6 +37,6 @@ class Gateway extends BaseDriver
      */
     public function complete(Request $request, PaymentInterface $payment = null): CompleteRequest
     {
-        return new CompleteRequest($request->get('payment_id'), time());
+        return new CompleteRequest($request->get('payment_id'), StatusContract::ACCEPT, time());
     }
 }

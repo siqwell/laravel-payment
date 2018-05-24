@@ -18,6 +18,11 @@ class CompleteRequest
     private $reference;
 
     /**
+     * @var
+     */
+    private $status;
+
+    /**
      * @var array
      */
     private $data;
@@ -25,13 +30,15 @@ class CompleteRequest
     /**
      * CompleteRequest constructor.
      *
-     * @param        $payment_id
-     * @param string $reference
-     * @param array  $data
+     * @param             $payment_id
+     * @param             $status
+     * @param string|null $reference
+     * @param array       $data
      */
-    public function __construct($payment_id, string $reference, array $data = [])
+    public function __construct($payment_id, $status, string $reference = null, array $data = [])
     {
         $this->payment_id = $payment_id;
+        $this->status     = $status;
         $this->reference  = $reference;
         $this->data       = $data;
     }
@@ -50,6 +57,14 @@ class CompleteRequest
     public function getReference()
     {
         return $this->reference;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getStatus()
+    {
+        return $this->status;
     }
 
     /**
