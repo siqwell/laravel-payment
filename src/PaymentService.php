@@ -73,11 +73,12 @@ class PaymentService
      * @param PaymentInterface|null $payment
      *
      * @return Response
+     * @throws Exceptions\OperationException
      * @throws PurchaseException
      */
     public function complete(Gateway $gateway, Request $request, PaymentInterface $payment = null): Response
     {
-        /** @var DriverContract $driver */
+        /** @var DriverContract|BaseDriver $driver */
         if (!$driver = $this->factory->create($gateway)) {
             throw new PurchaseException("Driver {$gateway->getDriver()} not found");
         }
@@ -90,6 +91,8 @@ class PaymentService
                 event(new PurchaseComplete($complete));
 
                 return $driver->success($request);
+            } else {
+                return $driver->failed($request);
             }
         } catch (InvalidResponseException $exception) {
             event(new PurchaseFailed($request, $exception));

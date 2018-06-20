@@ -108,6 +108,6 @@ class BaseDriver implements DriverContract
      */
     public function failed(Request $request, string $message = null): Response
     {
-        return new Response('Error', 402);
+        return new Response('Error', 500);
     }
 }
