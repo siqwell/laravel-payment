@@ -21,6 +21,11 @@ class PurchaseRequest
     protected $location;
 
     /**
+     * @var bool
+     */
+    protected $result;
+
+    /**
      * AbstractRequest constructor.
      *
      * @param null $result
@@ -37,7 +42,7 @@ class PurchaseRequest
     /**
      * @return bool
      */
-    public function isSuccesfull(): bool
+    public function isSuccessful(): bool
     {
         return false;
     }

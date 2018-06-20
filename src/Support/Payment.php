@@ -1,6 +1,8 @@
 <?php
 namespace Siqwell\Payment\Support;
 
+use GuzzleHttp\Psr7\Uri;
+use Illuminate\Routing\UrlGenerator;
 use Siqwell\Payment\Contracts\GatewayContract;
 use Siqwell\Payment\Contracts\PaymentContract;
 
@@ -100,27 +102,75 @@ class Payment implements PaymentContract
     }
 
     /**
-     * @return string
+     * @return array
      */
-    public function getResultUrl(): string
+    public function getCustomer(): array
     {
-        return $this->attributes['result_url'];
+        return $this->attributes['customer'];
     }
 
     /**
-     * @return string
+     * @param string $key
+     *
+     * @return mixed|null
      */
-    public function getSuccessUrl(): string
+    public function getCustomerValue(string $key)
     {
-        return $this->attributes['success_url'];
+        if (!isset($this->attributes['customer'][$key])) {
+            return null;
+        }
+
+        return $this->attributes['customer'][$key];
     }
 
     /**
+     * @param array $params
+     *
      * @return string
      */
-    public function getFailedUrl(): string
+    public function getNotifyUrl(array $params = []): string
     {
-        return $this->attributes['failed_url'];
+        return (new Uri($this->attributes['notify_url']))->withQuery(http_build_query($params));
+    }
+
+    /**
+     * @param array $params
+     *
+     * @return string
+     */
+    public function getResultUrl(array $params = []): string
+    {
+        return (new Uri($this->attributes['result_url']))->withQuery(http_build_query($params));
+    }
+
+    /**
+     * @param array $params
+     *
+     * @return string
+     */
+    public function getSuccessUrl(array $params = []): string
+    {
+        return (new Uri($this->attributes['success_url']))->withQuery(http_build_query($params));
+    }
+
+    /**
+     * @param array $params
+     *
+     * @return string
+     */
+    public function getFailedUrl(array $params = []): string
+    {
+        return (new Uri($this->attributes['failed_url']))->withQuery(http_build_query($params));
+    }
+
+    /**
+     * @param array $params
+     *
+     * @return string
+     */
+    public function getReturnUrl(array $params = []): string
+    {
+        return (new Uri($this->attributes['return_url']))->withQuery(http_build_query($params));
     }
 
     /**
@@ -129,5 +179,15 @@ class Payment implements PaymentContract
     public function getDescription(): string
     {
         return $this->attributes['description'];
+    }
+
+    /**
+     * @param string $key
+     *
+     * @return mixed|null
+     */
+    public function getAttributeByKey(string $key)
+    {
+        return isset($this->attributes[$key]) ? $this->attributes[$key] : null;
     }
 }

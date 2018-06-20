@@ -16,6 +16,7 @@ use Watson\Rememberable\Rememberable;
  * @method static Gateway|Builder key(string $key)
  * @method static Gateway|Builder remember($minutes)
  * @property Currency $currency
+ * @property array    params
  */
 class Gateway extends Model implements GatewayContract
 {
@@ -32,7 +33,15 @@ class Gateway extends Model implements GatewayContract
     protected $fillable = [
         'key',
         'name',
-        'driver'
+        'driver',
+        'params'
+    ];
+
+    /**
+     * @var array
+     */
+    protected $casts = [
+        'params' => 'array'
     ];
 
     /**
@@ -74,5 +83,23 @@ class Gateway extends Model implements GatewayContract
     public function getName(): string
     {
         return $this->getAttribute('key');
+    }
+
+    /**
+     * @return array
+     */
+    public function getParams(): array
+    {
+        return $this->params ?? [];
+    }
+
+    /**
+     * @param string $key
+     *
+     * @return null|string
+     */
+    public function getParameterByKey(string $key): ?string
+    {
+        return optional($this->getParams())->{$key};
     }
 }

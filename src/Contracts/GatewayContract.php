@@ -16,4 +16,9 @@ interface GatewayContract
      * @return string
      */
     public function getDriver(): string;
+
+    /**
+     * @return array
+     */
+    public function getParams(): array;
 }

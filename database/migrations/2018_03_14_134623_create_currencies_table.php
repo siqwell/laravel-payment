@@ -18,7 +18,7 @@ class CreateCurrenciesTable extends Migration
     {
         /** @var \Siqwell\Payment\Entities\Currency*/
         Schema::create('currencies', function (Blueprint $table) {
-            $table->increments('id')->unsigned();
+            $table->integer('id')->unsigned();
             $table->string('title', 255);
             $table->string('code', 3);
             $table->string('symbol_left', 12);

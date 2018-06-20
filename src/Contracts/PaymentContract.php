@@ -1,6 +1,5 @@
 <?php
 namespace Siqwell\Payment\Contracts;
-
 /**
  * Interface PaymentContract
  * @package Siqwell\Payment\Contracts
@@ -48,17 +47,56 @@ interface PaymentContract
     public function getAmount(): float;
 
     /**
-     * @return string
+     * @return array
      */
-    public function getResultUrl(): string;
+    public function getCustomer(): array;
 
     /**
-     * @return string
+     * @param string $key
+     *
+     * @return mixed|null
      */
-    public function getSuccessUrl(): string;
+    public function getCustomerValue(string $key);
 
     /**
+     * @param array $params
+     *
      * @return string
      */
-    public function getFailedUrl(): string;
+    public function getNotifyUrl(array $params = []): string;
+
+    /**
+     * @param array $params
+     *
+     * @return string
+     */
+    public function getResultUrl(array $params = []): string;
+
+    /**
+     * @param array $params
+     *
+     * @return string
+     */
+    public function getSuccessUrl(array $params = []): string;
+
+    /**
+     * @param array $params
+     *
+     * @return string
+     */
+    public function getReturnUrl(array $params = []): string;
+
+    /**
+     * @param array $params
+     *
+     * @return string
+     */
+    public function getFailedUrl(array $params = []): string;
+
+    /**
+     * @param string $key
+     *
+     * @return mixed
+     */
+    public function getAttributeByKey(string $key);
 }

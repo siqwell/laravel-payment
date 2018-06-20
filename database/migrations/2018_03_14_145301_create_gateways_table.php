@@ -18,7 +18,7 @@ class CreateGatewaysTable extends Migration
     {
         /** @var \Siqwell\Payment\Entities\Gateway */
         Schema::create('gateways', function (Blueprint $table) {
-            $table->increments('id');
+            $table->increments('id')->unsigned();
 
             $table->string('key');
             $table->string('name');
@@ -26,6 +26,8 @@ class CreateGatewaysTable extends Migration
 
             $table->unsignedInteger('currency_id');
             $table->boolean('is_active')->default(false);
+
+            $table->json('params')->nullable();
 
             $table->foreign('currency_id')->references('id')->on('currencies')->onDelete('cascade');
         });
