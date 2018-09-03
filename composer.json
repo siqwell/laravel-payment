@@ -15,6 +15,7 @@
     ],
     "require": {
         "league/omnipay": "^3.0",
+        "omnipay/paypal": "^2.6",
         "php-http/buzz-adapter": "^1.0",
         "florianv/laravel-swap": "^1.3"
     },

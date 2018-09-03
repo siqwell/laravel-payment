@@ -65,7 +65,7 @@ class PaymentServiceProvider extends ServiceProvider
     public function registerService()
     {
         $this->app->singleton('payment', function ($app) {
-            return new PaymentService($app, new DriverFactory());
+            return new PaymentService($app, new DriverFactory);
         });
 
         $this->app->alias('payment', PaymentService::class);
@@ -89,11 +89,11 @@ class PaymentServiceProvider extends ServiceProvider
     public function registerCommands()
     {
         $this->app->singleton('command.payment.currency-update', function () {
-            return new CurrencyUpdate();
+            return new CurrencyUpdate;
         });
 
         $this->app->singleton('command.payment.currency-clear', function () {
-            return new CurrencyClear();
+            return new CurrencyClear;
         });
 
         $this->commands($this->commands);
