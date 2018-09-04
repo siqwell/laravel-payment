@@ -3,8 +3,10 @@
 namespace Siqwell\Payment\PayPal;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Omnipay\CoinPayments\Message\CompletePurchaseResponse;
 use Omnipay\PayPal\Message\ExpressAuthorizeResponse;
+use Omnipay\PayPal\Message\ExpressCompletePurchaseResponse;
 use Siqwell\Payment\BaseDriver;
 use Siqwell\Payment\Contracts\PaymentContract;
 use Siqwell\Payment\Contracts\PaymentInterface;
@@ -32,10 +34,10 @@ class ExpressGateway extends BaseDriver
         /** @var ExpressAuthorizeResponse $result */
         $result = $this->omnipay->purchase([
             'amount'        => $contract->getAmount(),
-            'returnUrl'     => $contract->getReturnUrl(),
-            'cancelUrl'     => $contract->getFailedUrl(),
-            'notifyUrl'     => $contract->getNotifyUrl(),
             'transactionId' => $contract->getId(),
+            'description'   => $contract->getDescription(),
+            'returnUrl'     => $contract->getReturnUrl(['id' => $contract->getId()]),
+            'cancelUrl'     => $contract->getFailedUrl(),
             'currency'      => 'USD',
         ])->send();
 
@@ -54,7 +56,7 @@ class ExpressGateway extends BaseDriver
      */
     public function complete(Request $request, PaymentInterface $payment = null): CompleteRequest
     {
-        /** @var CompletePurchaseResponse $response */
+        /** @var ExpressCompletePurchaseResponse $response */
         $response = $this->omnipay->completePurchase([
             'amount' => $payment->getAmount()
         ])->send();
