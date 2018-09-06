@@ -3,6 +3,7 @@
 namespace Siqwell\Payment\WebMoney;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Omnipay\CoinPayments\Message\CompletePurchaseResponse;
 use Omnipay\CoinPayments\Message\PurchaseResponse;
 use Siqwell\Payment\BaseDriver;
@@ -50,11 +51,19 @@ class Gateway extends BaseDriver
      */
     public function complete(Request $request, PaymentInterface $payment = null): CompleteRequest
     {
+        if ($request->input('LMI_PREREQUEST')) {
+            return new CompleteRequest($payment->getInvoiceId(), StatusContract::PROCESS);
+        }
+
+        if (!$request->input('LMI_PAYMENT_NO') || !$request->input('LMI_PAYMENT_AMOUNT')) {
+            return new CompleteRequest($payment->getInvoiceId(), StatusContract::PROCESS);
+        }
+
         /** @var CompletePurchaseResponse $response */
         $response = $this->omnipay->completePurchase($request->all())->send();
 
         if ($response->isSuccessful()) {
-            return new CompleteRequest($response->getInvoiceId(), StatusContract::ACCEPT, $response->getTransactionReference());
+            return new CompleteRequest($response->getTransactionId(), StatusContract::ACCEPT, $response->getTransactionReference());
         }
 
         if ($response->isCancelled()) {
@@ -62,5 +71,25 @@ class Gateway extends BaseDriver
         }
 
         return new CompleteRequest($payment->getInvoiceId(), StatusContract::PROCESS);
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function success(Request $request): Response
+    {
+        return new Response('YES', 200);
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function process(Request $request): Response
+    {
+        return new Response('YES', 200);
     }
 }

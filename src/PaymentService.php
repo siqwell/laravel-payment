@@ -87,13 +87,20 @@ class PaymentService
             /** @var CompleteRequest $complete */
             $complete = $driver->complete($request, $payment);
 
-            if ($complete->getStatus() == StatusContract::ACCEPT) {
+            if ($complete->getStatus() === StatusContract::ACCEPT) {
                 event(new PurchaseComplete($complete));
 
                 return $driver->success($request);
-            } else {
-                return $driver->failed($request);
             }
+
+            if ($complete->getStatus() === StatusContract::PROCESS && method_exists($driver, 'process')) {
+                return $driver->process($request);
+            }
+
+            event(new PurchaseFailed($request));
+
+            return $driver->failed($request);
+
         } catch (InvalidResponseException $exception) {
             event(new PurchaseFailed($request, $exception));
 
