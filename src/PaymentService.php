@@ -60,7 +60,7 @@ class PaymentService
         }
 
         /** @var PurchaseRequest $request */
-        $request = $driver->purchase($contract);
+        $request = $driver->purchase($contract, $payment);
 
         event(new PurchaseStart($contract, $request));
 

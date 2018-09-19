@@ -12,8 +12,8 @@ use Siqwell\Payment\Contracts\PaymentContract;
 use Siqwell\Payment\Contracts\PaymentInterface;
 use Siqwell\Payment\Contracts\StatusContract;
 use Siqwell\Payment\Entities\Currency;
+use Siqwell\Payment\Entities\Gateway;
 use Siqwell\Payment\Exceptions\DriverException;
-use Siqwell\Payment\Exceptions\ExchangeException;
 use Siqwell\Payment\Requests\CompleteRequest;
 use Siqwell\Payment\Requests\PurchaseRequest;
 use Siqwell\Payment\Support\Location;
@@ -30,30 +30,21 @@ class ExpressGateway extends BaseDriver
      *
      * @return PurchaseRequest
      * @throws DriverException
-     * @throws ExchangeException
      */
     public function purchase(PaymentContract $contract, PaymentInterface $payment = null): PurchaseRequest
     {
-        //Hot fix for amount conversion
-        /** @var Currency $currency */
-        $currency = Currency::where('id', $payment->getCurrencyId())->first();
-
-        $converted =
-            $this->currency
-                ->exchange(
-                    $contract->getAmount(),
-                    $this->omnipay->getParameter('currency_id'),
-                    $currency->code
-                );
+        /** @var Gateway $gateway */
+        $gateway = Gateway::find($payment->gateway->id);
+        $currency = Currency::find($gateway->currency_id);
 
         /** @var ExpressAuthorizeResponse $result */
         $result = $this->omnipay->purchase([
-            'amount'        => $converted,
+            'amount'        => $contract->getAmount(),
             'transactionId' => $contract->getId(),
             'description'   => $contract->getDescription(),
             'returnUrl'     => $contract->getReturnUrl(['id' => $contract->getId()]),
             'cancelUrl'     => $contract->getFailedUrl(),
-            'currency'      => 'USD',
+            'currency'      => $currency->code,
         ])->send();
 
         if (!$redirect = $result->getRedirectUrl()) {
