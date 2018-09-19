@@ -70,10 +70,10 @@ class CurrencyUpdateJob implements ShouldQueue
         }
 
         Course::updateOrCreate([
-            'date' => $rate->getDate()->format('Y-m-d'),
             'from' => $this->from->getKey(),
             'to'   => $this->to->getKey(),
         ], [
+            'date' => $rate->getDate()->format('Y-m-d'),
             'value' => $rate->getValue(),
         ]);
     }
