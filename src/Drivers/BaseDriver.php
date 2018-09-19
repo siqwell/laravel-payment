@@ -13,6 +13,7 @@ use Siqwell\Payment\Contracts\PaymentContract;
 use Siqwell\Payment\Contracts\PaymentInterface;
 use Siqwell\Payment\Exceptions\DriverException;
 use Siqwell\Payment\Exceptions\OperationException;
+use Siqwell\Payment\Helpers\Currency;
 use Siqwell\Payment\Requests\CheckRequest;
 use Siqwell\Payment\Requests\CompleteRequest;
 use Siqwell\Payment\Requests\PurchaseRequest;
@@ -27,6 +28,11 @@ class BaseDriver implements DriverContract
      * @var AbstractGateway
      */
     protected $omnipay;
+
+    /**
+     * @var Currency
+     */
+    protected $currency;
 
     /**
      * BaseDriver constructor.
@@ -44,6 +50,8 @@ class BaseDriver implements DriverContract
         } catch (RuntimeException $e) {
             throw new DriverException(sprintf('Gateway %s for %s driver not configured in omnipay config file', $gateway->getName(), $gateway->getDriver()));
         }
+
+        $this->currency = new Currency();
     }
 
     /**
